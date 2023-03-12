@@ -42,6 +42,10 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default:[],
       },
+      isLive:{
+        type:Boolean, 
+        default:false,
+      },
     location: String,
     occupation: String,
     viewedProfile: Number,

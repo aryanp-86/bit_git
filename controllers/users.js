@@ -74,7 +74,7 @@ export const updateProfile = async(req,res) => {
       location,
       occupation,
     } = req.body;
-    User.updateOne({ _id: '640cb0ae9fa8e6a5f7eceb52' }, { $set: { firstName:firstName,lastName:lastName,bio:bio,picturePath:picturePath,location:location, occupation:occupation } })
+    User.updateOne({ _id: id }, { $set: { firstName:firstName,lastName:lastName,bio:bio,picturePath:picturePath,location:location, occupation:occupation } })
   .then(result => {
     res.status(200).json(result)
   })
@@ -96,7 +96,8 @@ export const reqFriend = async (req, res) => {
       friend.reqFriends.push(id);
     }
     await friend.save();
-  }catch{
+
+  }catch(err){
       res.status(500).json({err:err.message})
   }
 };
@@ -110,12 +111,13 @@ export const reqFriendAdd= async (req, res) => {
     if (!user.friends.includes(friendId)) {
       user.friends.push(friendId);
       friend.friends.push(id);
+      user.reqFriends = user.reqFriends.filter((id)=>{id !== friendId})
+      friend.reqFriends = friend.reqFriends.filter((id)=>{id !== id})
     } 
     await user.save();
     await friend.save();
-    user.reqFriends = user.reqFriends.filter((id)=>{id !== friendId})
-    await user.save();
-  }catch{
+    
+  }catch(err){
       res.status(500).json({err:err.message})
   }
 };
@@ -149,7 +151,26 @@ export const reqFriendRemove = async (req, res) => {
     console.log(remUser);
     // user.reqFriends = user.reqFriends.splice(remUser,1);
     await user.save();
-  }catch{
+  }catch(err){
       res.status(500).json({err:err.message})
   }
 };
+
+export const checkLive = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const user = await User.findById(id);
+    const setTrue = user.isLive;
+    User.findOneAndUpdate({_id: id},{$set:{isLive: !setTrue}})
+    .then(result => {
+      res.status(200).json(result)
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+  }catch(err){
+      res.status(500).json({err:err.message})
+  }
+};
+

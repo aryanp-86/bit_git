@@ -6,6 +6,7 @@ import {
   reqFriend,
   reqFriendAdd,
   reqFriendRemove,
+  checkLive,
 } from "../controllers/users.js";
 import {updateProfile}  from "../controllers/users.js";
 import { verifyToken } from "../middleware/auth.js";
@@ -23,6 +24,7 @@ router.patch("/:id/:friendId", verifyToken, addRemoveFriend);
 router.patch("/:id/:friendId/request", verifyToken, reqFriend);
 router.patch("/:id/:friendId/request/add", verifyToken, reqFriendAdd);
 router.patch("/:id/:friendId/request/remove", verifyToken, reqFriendRemove);
+router.patch("/:id", verifyToken, checkLive);
 
 
 
